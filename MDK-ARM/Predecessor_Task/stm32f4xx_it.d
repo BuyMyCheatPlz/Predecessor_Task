@@ -35,4 +35,5 @@ predecessor_task\stm32f4xx_it.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_h
 predecessor_task\stm32f4xx_it.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h
 predecessor_task\stm32f4xx_it.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
 predecessor_task\stm32f4xx_it.o: ../Core/Inc/stm32f4xx_it.h
+predecessor_task\stm32f4xx_it.o: ../Core/Inc/can.h
 predecessor_task\stm32f4xx_it.o: ../Core/Inc/usart.h

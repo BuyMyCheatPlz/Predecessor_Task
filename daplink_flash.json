@@ -11,7 +11,7 @@
     "busid": "3-1"
   },
   "flash": {
-    "file": "build/Debug/Predecessor_Task.elf",
+    "file": "MDK-ARM/Predecessor_Task/Predecessor_Task.axf",
     "method": "pyocd",
     "pyocd_target": "auto",
     "pyocd_frequency": 1000000

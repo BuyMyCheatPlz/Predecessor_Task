@@ -29,11 +29,6 @@ static uint16_t Motor_ReadUInt16BE(const uint8_t *data, uint8_t index)
   return (uint16_t)(((uint16_t)data[index] << 8) | (uint16_t)data[index + 1U]);
 }
 
-static int16_t Motor_ReadInt16LE(const uint8_t *data, uint8_t index)
-{
-  return (int16_t)(((uint16_t)data[index + 1U] << 8) | (uint16_t)data[index]);
-}
-
 static int16_t Motor_ReadInt16BE(const uint8_t *data, uint8_t index)
 {
   return (int16_t)(((uint16_t)data[index] << 8) | (uint16_t)data[index + 1U]);
@@ -62,7 +57,7 @@ static void Motor_UpdateFeedback(const CAN_RxHeaderTypeDef *rx_header, const uin
 
   feedback.driver_id = (uint8_t)driver_id;
   feedback.mechanical_angle = Motor_ReadUInt16BE(rx_data, 0U);
-  feedback.speed = Motor_ReadInt16LE(rx_data, 2U);
+  feedback.speed = Motor_ReadInt16BE(rx_data, 2U);
   feedback.torque_current = Motor_ReadInt16BE(rx_data, 4U);
   feedback.motor_temperature = rx_data[6];
   feedback.can_id = rx_header->StdId;
@@ -112,6 +107,24 @@ static void Motor_SendGroupCommand(CAN_HandleTypeDef *hcan, uint16_t std_id,
 
 void Motor_Init(void)
 {
+  CAN_FilterTypeDef filter = {0};
+
+  filter.FilterBank = 0;
+  filter.FilterMode = CAN_FILTERMODE_IDMASK;
+  filter.FilterScale = CAN_FILTERSCALE_32BIT;
+  filter.FilterIdHigh = 0x0000U;
+  filter.FilterIdLow = 0x0000U;
+  filter.FilterMaskIdHigh = 0x0000U;
+  filter.FilterMaskIdLow = 0x0000U;
+  filter.FilterFIFOAssignment = CAN_FILTER_FIFO0;
+  filter.FilterActivation = ENABLE;
+  filter.SlaveStartFilterBank = 14;
+
+  if (HAL_CAN_ConfigFilter(&hcan1, &filter) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
   if (HAL_CAN_Start(&hcan1) != HAL_OK)
   {
     Error_Handler();

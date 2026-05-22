@@ -80,6 +80,9 @@ void HAL_CAN_MspInit(CAN_HandleTypeDef* canHandle)
     GPIO_InitStruct.Alternate = GPIO_AF9_CAN1;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
+    HAL_NVIC_SetPriority(CAN1_RX0_IRQn, 5, 0);
+    HAL_NVIC_EnableIRQ(CAN1_RX0_IRQn);
+
     /* USER CODE BEGIN CAN1_MspInit 1 */
 
     /* USER CODE END CAN1_MspInit 1 */
@@ -95,6 +98,7 @@ void HAL_CAN_MspDeInit(CAN_HandleTypeDef* canHandle)
     /* USER CODE END CAN1_MspDeInit 0 */
     __HAL_RCC_CAN1_CLK_DISABLE();
     HAL_GPIO_DeInit(GPIOA, GPIO_PIN_11 | GPIO_PIN_12);
+    HAL_NVIC_DisableIRQ(CAN1_RX0_IRQn);
 
     /* USER CODE BEGIN CAN1_MspDeInit 1 */
 
