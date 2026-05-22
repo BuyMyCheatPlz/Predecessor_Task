@@ -21,6 +21,14 @@
 #ifndef _INV_MPU_H_
 #define _INV_MPU_H_
 
+#if defined(STM32F405xx) && !defined(MOTION_DRIVER_TARGET_STM32)
+#define MOTION_DRIVER_TARGET_STM32
+#endif
+
+#if defined(MOTION_DRIVER_TARGET_STM32) && !defined(MPU6050) && !defined(MPU9150) && !defined(MPU6500) && !defined(MPU9250)
+#define MPU6050
+#endif
+
 #define INV_X_GYRO      (0x40)
 #define INV_Y_GYRO      (0x20)
 #define INV_Z_GYRO      (0x10)
@@ -32,6 +40,10 @@ struct int_param_s {
 #if defined EMPL_TARGET_MSP430 || defined MOTION_DRIVER_TARGET_MSP430
     void (*cb)(void);
     unsigned short pin;
+    unsigned char lp_exit;
+    unsigned char active_low;
+#elif defined MOTION_DRIVER_TARGET_STM32
+    void (*cb)(void);
     unsigned char lp_exit;
     unsigned char active_low;
 #elif defined EMPL_TARGET_UC3L0

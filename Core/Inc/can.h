@@ -4,6 +4,8 @@
   * @file    can.h
   * @brief   This file contains all the function prototypes for
   *          the can.c file
+extern CAN_HandleTypeDef hcan1;
+
   ******************************************************************************
   * @attention
   *
@@ -32,13 +34,13 @@ extern "C" {
 
 /* USER CODE END Includes */
 
-extern CAN_HandleTypeDef hcan2;
+extern CAN_HandleTypeDef hcan1;
 
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
 
-void MX_CAN2_Init(void);
+void MX_CAN1_Init(void);
 
 /* USER CODE BEGIN Prototypes */
 

@@ -1,4 +1,5 @@
-#ifndef __TASKS.H__
+#ifndef __TASKS_H__
+#define __TASKS_H__
 
 #include "FreeRTOS.h"
 #include "task.h"
@@ -9,5 +10,5 @@
 
 void StartTask02(void *argument);
 void StartTask03(void *argument);
-void VOFA_Send_Data(&float pitch, &float roll, &float yaw);
+void VOFA_Send_Data(float *pitch, float *roll, float *yaw);
 #endif /* __TASKS.H__ */

@@ -45,6 +45,9 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 # Add sources to executable
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
+     ${CMAKE_CURRENT_SOURCE_DIR}/User/Tasks/Src/tasks.c
+     ${CMAKE_CURRENT_SOURCE_DIR}/User/Remote_Control/Src/Remote_Control.c
+     ${CMAKE_CURRENT_SOURCE_DIR}/User/Drivers/Motor/Src/Motor.c
      ${CMAKE_CURRENT_SOURCE_DIR}/User/Drivers/IMU/Src/MPU6050.c
      ${CMAKE_CURRENT_SOURCE_DIR}/User/Drivers/IMU/Src/inv_mpu.c
      ${CMAKE_CURRENT_SOURCE_DIR}/User/Drivers/IMU/Src/inv_mpu_dmp_motion_driver.c
@@ -54,6 +57,9 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
 # Add include paths
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined include paths
+     ${CMAKE_CURRENT_SOURCE_DIR}/User/Tasks/Inc
+     ${CMAKE_CURRENT_SOURCE_DIR}/User/Drivers/Motor/Inc
+     ${CMAKE_CURRENT_SOURCE_DIR}/User/Remote_Control/Inc
      ${CMAKE_CURRENT_SOURCE_DIR}/User/Drivers/IMU/Inc
     ${CMAKE_CURRENT_SOURCE_DIR}/Utils/Inc
 )

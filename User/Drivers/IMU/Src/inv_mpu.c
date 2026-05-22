@@ -618,7 +618,7 @@ static struct gyro_state_s st = {
 #define MAX_PACKET_LENGTH (12)
 
 #ifdef AK89xx_SECONDARY
-static int setup_compass(void);
+static int setup_compass(void) __attribute__((unused));
 #define MAX_COMPASS_SAMPLE_RATE (100)
 #endif
 
@@ -2372,9 +2372,10 @@ int mpu_get_dmp_state(unsigned char *enabled)
 
 
 /* This initialization is similar to the one in ak8975.c. */
+#ifdef AK89xx_SECONDARY
+static int setup_compass(void) __attribute__((unused));
 static int setup_compass(void)
 {
-#ifdef AK89xx_SECONDARY
     unsigned char data[4], akm_addr;
 
     mpu_set_bypass(1);
@@ -2439,7 +2440,6 @@ static int setup_compass(void)
     if (i2c_write(st.hw->addr, st.reg->s0_ctrl, 1, data))
         return -1;
 
-    /* Slave 1 changes AKM measurement mode. */
     data[0] = st.chip_cfg.compass_addr;
     if (i2c_write(st.hw->addr, st.reg->s1_addr, 1, data))
         return -1;
@@ -2472,10 +2472,8 @@ static int setup_compass(void)
 #endif
 
     return 0;
-#else
-    return -1;
-#endif
 }
+#endif
 
 /**
  *  @brief      Read raw compass data.
