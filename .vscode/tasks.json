@@ -1,0 +1,70 @@
+{
+  {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "DAPLink: pyocd flash",
+        "type": "shell",
+        "command": "bash -lc 'serial=$(jq -r .probe.serial daplink_flash.json); file=$(jq -r .flash.file daplink_flash.json); target=$(jq -r .flash.pyocd_target daplink_flash.json); freq=$(jq -r .flash.pyocd_frequency daplink_flash.json); python3 -m pyocd flash -u \"$serial\" -t \"$target\" -f \"$freq\" -e auto \"$file\"'",
+        "group": { "kind": "build", "isDefault": true },
+        "presentation": { "reveal": "always" },
+        "problemMatcher": []
+      },
+      {
+        "label": "DAPLink: STM32CubeProgrammer flash",
+        "type": "shell",
+        "command": "bash -lc 'serial=$(jq -r .probe.serial daplink_flash.json); file=$(jq -r .flash.file daplink_flash.json); /opt/st/stm32cubeclt_1.21.0/STM32CubeProgrammer/bin/STM32_Programmer_CLI -c port=SWD sn=\"$serial\" -w \"$file\" -v'",
+        "presentation": { "reveal": "always" },
+        "problemMatcher": []
+      },
+      {
+        "label": "DAPLink: OpenOCD flash",
+        "type": "shell",
+        "command": "bash -lc 'serial=$(jq -r .probe.serial daplink_flash.json); file=$(jq -r .flash.file daplink_flash.json); openocd -f interface/cmsis-dap.cfg -c \"adapter serial $serial\" -f target/stm32f4x.cfg -c \"adapter_khz 1000; transport select swd; init; reset init; program $file verify reset exit\"'",
+        "presentation": { "reveal": "always" },
+        "problemMatcher": []
+      },
+      {
+        "label": "DAPLink: Remote USBIP Attach for Debug",
+        "type": "shell",
+        "isBackground": true,
+        "command": "bash -lc 'set -e; cfg=daplink_flash.json; server=$(jq -r .probe.ip $cfg); busid=$(jq -r .probe.busid $cfg); serial=$(jq -r .probe.serial $cfg); freq=$(jq -r .flash.pyocd_frequency $cfg); file=$(jq -r .flash.file $cfg); if [ -z \"$server\" ] || [ \"$server\" = \"REPLACE_WITH_DEVICE_IP\" ]; then echo Config daplink_flash.json with probe.ip; exit 1; fi; echo Attaching $busid from $server...; sudo modprobe vhci-hcd; sudo usbip attach -r \"$server\" -b \"$busid\"; echo Waiting for device node...; for i in {1..20}; do if ls /dev/ttyACM* 1>/dev/null 2>&1 || ls /dev/hidraw* 1>/dev/null 2>&1; then echo Device node ready; break; fi; sleep 0.5; done; echo Starting pyOCD gdbserver...; python3 -m pyocd gdbserver -u \"$serial\" -f \"$freq\"'",
+        "presentation": { "reveal": "always", "panel": "shared" },
+        "problemMatcher": [
+          {
+            "pattern": [
+              {
+                "regexp": "Listening on port",
+                "file": 1,
+                "line": 2,
+                "severity": "info"
+              }
+            ],
+            "owner": "pyocd"
+          }
+        ]
+      },
+      {
+        "label": "DAPLink: Remote USBIP Detach",
+        "type": "shell",
+        "command": "bash -lc 'set -e; cfg=daplink_flash.json; busid=$(jq -r .probe.busid $cfg); echo Detaching any usbip ports for busid $busid; port=$(usbip port | awk '/Exported/ {print $1}'); sudo usbip detach -p $port || true; sudo usbip unbind -b \"$busid\" || true; echo done'",
+        "presentation": { "reveal": "always" },
+        "problemMatcher": []
+      },
+      {
+        "label": "DAPLink: Remote USBIP One-Click Flash",
+        "type": "shell",
+        "command": "bash -lc 'set -e; cfg=daplink_flash.json; file=$(jq -r .flash.file $cfg); server=$(jq -r .probe.ip $cfg); busid=$(jq -r .probe.busid $cfg); serial=$(jq -r .probe.serial $cfg); freq=$(jq -r .flash.pyocd_frequency $cfg); if [ -z \"$server\" ] || [ \"$server\" = \"REPLACE_WITH_DEVICE_IP\" ]; then echo Config daplink_flash.json with probe.ip; exit 1; fi; echo Attaching $busid from $server...; sudo modprobe vhci-hcd; sudo usbip attach -r \"$server\" -b \"$busid\"; echo Waiting for device node...; for i in {1..20}; do if ls /dev/ttyACM* 1>/dev/null 2>&1 || ls /dev/hidraw* 1>/dev/null 2>&1; then break; fi; sleep 0.5; done; echo Starting pyOCD flash...; python3 -m pyocd flash -u \"$serial\" -f \"$freq\" -e auto \"$file\"; echo Flash finished; echo Detaching usbip...; port=$(usbip port | awk '/Attached/ {print $1; exit}'); if [ -n \"$port\" ]; then sudo usbip detach -p $port || true; fi; echo Done.'",
+        "presentation": { "reveal": "always", "panel": "shared" },
+        "problemMatcher": []
+      }
+    ]
+  }
+      "label": "DAPLink: Remote USBIP One-Click Flash",
+      "type": "shell",
+      "command": "bash -lc 'set -e; cfg=daplink_flash.json; file=$(jq -r .flash.file $cfg); server=$(jq -r .probe.ip $cfg); busid=$(jq -r .probe.busid $cfg); serial=$(jq -r .probe.serial $cfg); freq=$(jq -r .flash.pyocd_frequency $cfg); if [ -z \"$server\" ] || [ \"$server\" = \"REPLACE_WITH_DEVICE_IP\" ]; then echo Config daplink_flash.json with probe.ip; exit 1; fi; echo Attaching $busid from $server...; sudo modprobe vhci-hcd; sudo usbip attach -r \"$server\" -b \"$busid\"; echo Waiting for device node...; for i in {1..20}; do if ls /dev/ttyACM* 1>/dev/null 2>&1 || ls /dev/hidraw* 1>/dev/null 2>&1; then break; fi; sleep 0.5; done; echo Starting pyOCD flash...; python3 -m pyocd flash -u \"$serial\" -f \"$freq\" -e auto \"$file\"; echo Flash finished; echo Detaching usbip...; port=$(usbip port | awk '/Attached/ {print $1; exit}'); if [ -n \"$port\" ]; then sudo usbip detach -p $port || true; fi; echo Done.'",
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
+    }
+  ]
+}

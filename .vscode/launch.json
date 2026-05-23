@@ -1,0 +1,22 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug (pyOCD gdbserver via USB/IP)",
+      "type": "cortex-debug",
+      "request": "launch",
+      "servertype": "external",
+      "executable": "${workspaceFolder}/build/Debug/Predecessor_Task.elf",
+      "device": "STM32F405RG",
+      "gdbServerAddress": "localhost:3333",
+      "gdbTarget": "localhost:3333",
+      "gdbPath": "arm-none-eabi-gdb",
+      "cwd": "${workspaceFolder}",
+      "preLaunchTask": "DAPLink: Remote USBIP Attach for Debug",
+      "postDebugTask": "DAPLink: Remote USBIP Detach",
+      "runToEntryPoint": "main",
+      "svdFile": "",
+      "showDevDebugOutput": true
+    }
+  ]
+}

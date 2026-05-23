@@ -1,0 +1,19 @@
+{
+  "probe": {
+    "type": "cmsis-dap",
+    "vendorId": "0xfaed",
+    "productId": "0x4870",
+    "serial": "134244832403",
+    "deviceNode": "/dev/ttyACM0",
+    "connection": "network",
+    "ip": "10.194.133.170",
+    "port": 3232,
+    "busid": "3-1"
+  },
+  "flash": {
+    "file": "build/Debug/Predecessor_Task.elf",
+    "method": "pyocd",
+    "pyocd_target": "auto",
+    "pyocd_frequency": 1000000
+  }
+}
