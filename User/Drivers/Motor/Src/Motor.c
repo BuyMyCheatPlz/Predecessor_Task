@@ -6,13 +6,13 @@ static MotorFeedback_t g_last_motor_feedback;
 
 static int16_t Motor_ClampVoltage(int16_t voltage)
 {
-  if (voltage > 25000)
+  if (voltage > 2500)
   {
-    return 25000;
+    return 2500;
   }
-  if (voltage < -25000)
+  if (voltage < -2500)
   {
-    return -25000;
+    return -2500;
   }
   return voltage;
 }
@@ -57,8 +57,9 @@ static void Motor_UpdateFeedback(const CAN_RxHeaderTypeDef *rx_header, const uin
 
   feedback.driver_id = (uint8_t)driver_id;
   feedback.mechanical_angle = Motor_ReadUInt16BE(rx_data, 0U);
-  feedback.speed = Motor_ReadInt16BE(rx_data, 2U);
-  feedback.torque_current = Motor_ReadInt16BE(rx_data, 4U);
+  /* Invert directional feedback: flip speed and torque sign */
+  feedback.speed = (int16_t)(-Motor_ReadInt16BE(rx_data, 2U));
+  feedback.torque_current = (int16_t)(-Motor_ReadInt16BE(rx_data, 4U));
   feedback.motor_temperature = rx_data[6];
   feedback.can_id = rx_header->StdId;
   feedback.valid = 1U;

@@ -51,4 +51,3 @@ predecessor_task\tasks_1.o: ../Core/Inc/usart.h
 predecessor_task\tasks_1.o: ../User/Drivers/Motor/Inc/Motor.h
 predecessor_task\tasks_1.o: ../User/Remote_Control/Inc/Remote_Control.h
 predecessor_task\tasks_1.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
-predecessor_task\tasks_1.o: ../Core/Inc/../../Utils/Inc/justfloat.h

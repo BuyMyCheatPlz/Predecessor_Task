@@ -100,7 +100,7 @@ static int run_self_test(void)
 int MPU6050_DMP_init(void)
 {
     int ret;
-    struct int_param_s int_param;
+    struct int_param_s int_param = {0};
     //mpu_init
     ret = mpu_init(&int_param);
     if(ret != 0)

@@ -24,5 +24,6 @@
 
 int MPU6050_DMP_init(void);
 int MPU6050_DMP_Get_Date(float *pitch, float *roll, float *yaw);
+int MPU6050_DMP_Get_Raw(long *quat0, long *quat1, long *quat2, long *quat3, short *sensors);
 
 #endif /* INC_MPU6050_H_ */
