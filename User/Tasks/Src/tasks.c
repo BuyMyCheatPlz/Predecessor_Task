@@ -146,10 +146,12 @@ void StartTask03(void *argument)
     int16_t motor2_command = 0;
     int16_t motor4_command = 0;
 
-    (void)RemoteControl_GetMotorCommands(&motor2_command, &motor4_command);
-
-    /* Apply direct subtraction compensation for motor2 (0x03EF == 1007) */
-    motor2_command = (int16_t)(motor2_command - (int16_t)0x03EF);
+    /* Get motor commands; only apply compensation when remote is valid */
+    if (RemoteControl_GetMotorCommands(&motor2_command, &motor4_command) != false)
+    {
+      /* Apply direct subtraction compensation for motor2 (0x03EF == 1007) */
+      motor2_command = (int16_t)(motor2_command - (int16_t)0x03EF);
+    }
 
     motor2_command = Task_ClampMotorCommand(motor2_command);
     motor4_command = Task_ClampMotorCommand(motor4_command);

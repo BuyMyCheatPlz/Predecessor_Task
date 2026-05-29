@@ -14,6 +14,11 @@
 #define MOTOR_COMMAND_MAX 25000
 #define REMOTE_CONTROL_TIMEOUT_MS 50U
 
+/* SBUS flag byte (index 23) bits: bit2 = frame lost, bit3 = failsafe (per SBUS spec) */
+#define SBUS_FLAG_BYTE_INDEX 23U
+#define SBUS_FLAG_FRAME_LOST 0x04U
+#define SBUS_FLAG_FAILSAFE 0x08U
+
 static uint8_t g_sbus_frame[SBUS_FRAME_LENGTH];
 static volatile int16_t g_motor2_command = 0;
 static volatile int16_t g_motor4_command = 0;
@@ -69,6 +74,29 @@ static void RemoteControl_UpdateCommandsFromFrame(const uint8_t *frame)
   if ((frame[0] != SBUS_START_BYTE) || (frame[SBUS_FRAME_LENGTH - 1U] != SBUS_END_BYTE))
   {
     return;
+  }
+
+  /* Check SBUS flags for frame lost / failsafe. If failsafe, mark commands invalid and force zero outputs. */
+  {
+    uint8_t flags = frame[SBUS_FLAG_BYTE_INDEX];
+    if ((flags & SBUS_FLAG_FAILSAFE) != 0U)
+    {
+      g_motor2_command = 0;
+      g_motor4_command = 0;
+      g_command_valid = 0U;
+      g_last_frame_tick = xTaskGetTickCountFromISR();
+      return;
+    }
+
+    if ((flags & SBUS_FLAG_FRAME_LOST) != 0U)
+    {
+      /* Treat frame-lost as invalid as well */
+      g_motor2_command = 0;
+      g_motor4_command = 0;
+      g_command_valid = 0U;
+      g_last_frame_tick = xTaskGetTickCountFromISR();
+      return;
+    }
   }
 
   g_motor2_command = RemoteControl_ChannelToCommand(RemoteControl_ReadChannel(frame, 0U));
